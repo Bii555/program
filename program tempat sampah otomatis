@@ -1,0 +1,52 @@
+
+#include <Servo.h>.
+// Defines Tirg and Echo pins of the Ultrasonic Sensor
+
+// Tentukan pin Trigonometri dan Gema Sensor Ultrasonik
+const int trigPin = 25;
+const int echoPin = 26;
+// Variabel untuk durasi dan jarak
+long duration;
+float distance;
+
+int tutup = 0;
+int buka = 100;
+
+Servo myServo; // Creates a servo object for controlling the servo motor
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+
+  Serial.begin(112500); // memulai dan menggunakan serial monitor dengan baud rate 112500
+  myServo.attach(27); // Defines on which pin is the servo motor attached
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  calculateDistance();
+  if (distance <= 50) {
+    myServo.write(buka);
+    Serial.println("Servo Buka");
+    delay(3000);
+  } else {
+    myServo.write(tutup);
+    Serial.println("Servo Tutup");
+  }
+  delay(1000);
+}
+int calculateDistance() {
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
+  distance = duration * 0.034 / 2;
+  Serial.print("Jarak : ");
+  Serial.println(distance);
+  return distance;
+}
